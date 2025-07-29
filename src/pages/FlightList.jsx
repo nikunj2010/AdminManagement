@@ -1,14 +1,18 @@
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import FlightsContext from "./FlightsContext";
 import { useNavigate } from "react-router-dom";
 
 import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap/dist/js/bootstrap.bundle.min";
 
-export default function FlightTable() {
+export default function FlightList() {
   const ctx = useContext(FlightsContext);
   const [searchTerm, setSearchTerm] = useState("");
   const navigate = useNavigate();
+
+  useEffect(() => {
+      ctx.getFlights();
+    }, [ctx.getFlights]);
 
   const headerStyle = {
     border: "1px solid black",
@@ -36,7 +40,7 @@ export default function FlightTable() {
   };
 
   const handleEdit = (id) => {
-    navigate(`/flight/${id}`);
+    navigate(`/flights/${id}`);
   };
 
   const handleCancel = async (flightId) => {

@@ -51,7 +51,7 @@ export default function EditFlight() {
     };
 
     ctx.updateFlight(updatedFlight);
-    navigate("/");
+    navigate("/flights");
   };
 
   return (
@@ -218,7 +218,7 @@ export default function EditFlight() {
 
         <button
           type="button"
-          onClick={() => navigate("/")}
+          onClick={() => navigate("/flights")}
           style={{ backgroundColor: "#ccc", color: "#000", marginLeft: "10px" }}
         >
           Cancel
