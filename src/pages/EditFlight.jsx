@@ -200,11 +200,16 @@ export default function EditFlight() {
           <select
             name="cancelled"
             defaultValue={flight.cancelled ? "true" : "false"}
-            disabled
+            disabled={!flight.cancelled} // disable if scheduled
           >
             <option value="false">Scheduled</option>
             <option value="true">Cancelled</option>
           </select>
+
+          {/* Include hidden input to ensure the value is submitted even when disabled */}
+          {!flight.cancelled && (
+            <input type="hidden" name="cancelled" value="false" />
+          )}
         </div>
 
         <button type="submit" style={{ marginTop: "15px" }}>
