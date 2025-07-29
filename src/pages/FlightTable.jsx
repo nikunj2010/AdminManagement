@@ -39,6 +39,29 @@ export default function FlightTable() {
     navigate(`/flight/${id}`);
   };
 
+  const handleCancel = async (flightId) => {
+    const confirmed = window.confirm(
+      "Are you sure you want to cancel this flight?"
+    );
+    if (!confirmed) return;
+
+    const url = "http://localhost:8080/flights?flightId=" + flightId;
+    console.log(url);
+    try {
+      const response = await fetch(url, {
+        method: "DELETE",
+      });
+      if (response.ok) {
+        alert("Flight cancelled successfully");
+      } else {
+        alert("Failed to cancel the flight");
+      }
+    } catch (error) {
+      console.error("Error cancelling flight:", error);
+      alert("Something went wrong");
+    }
+  };
+
   const flights = ctx.flights;
 
   return (
@@ -92,6 +115,12 @@ export default function FlightTable() {
                   onClick={() => handleEdit(flight.id)}
                 >
                   Edit
+                </button>
+                <button
+                  className="btn btn-danger btn-sm"
+                  onClick={() => handleCancel(flight.id)}
+                >
+                  Delete
                 </button>
               </td>
             </tr>

@@ -47,7 +47,7 @@ export default function EditFlight() {
       totalSeats: parseInt(e.target.totalSeats.value),
       availableSeats: parseInt(e.target.availableSeats.value),
       price: parseFloat(e.target.price.value),
-      cancelled: e.target.cancelled.value
+      cancelled: e.target.cancelled.value,
     };
 
     ctx.updateFlight(updatedFlight);
@@ -59,7 +59,10 @@ export default function EditFlight() {
       <h2>Edit Flight Details</h2>
       <form onSubmit={handleSubmit}>
         <div>
-          <label><strong>Flight Number:</strong></label><br />
+          <label>
+            <strong>Flight Number:</strong>
+          </label>
+          <br />
           <input
             type="text"
             name="flightNumber"
@@ -69,13 +72,18 @@ export default function EditFlight() {
         </div>
 
         <div>
-          <label><strong>Departure Airport:</strong></label><br />
+          <label>
+            <strong>Departure Airport:</strong>
+          </label>
+          <br />
           <select
             name="departureAirportId"
             defaultValue={flight.departureAirport?.id}
             required
           >
-            <option value="" disabled>-- Select Airport --</option>
+            <option value="" disabled>
+              -- Select Airport --
+            </option>
             {ctx.airports.map((airport) => (
               <option key={airport.id} value={airport.id}>
                 {airport.name}
@@ -85,13 +93,18 @@ export default function EditFlight() {
         </div>
 
         <div>
-          <label><strong>Arrival Airport:</strong></label><br />
+          <label>
+            <strong>Arrival Airport:</strong>
+          </label>
+          <br />
           <select
             name="arrivalAirportId"
             defaultValue={flight.arrivalAirport?.id}
             required
           >
-            <option value="" disabled>-- Select Airport --</option>
+            <option value="" disabled>
+              -- Select Airport --
+            </option>
             {ctx.airports.map((airport) => (
               <option key={airport.id} value={airport.id}>
                 {airport.name}
@@ -101,7 +114,10 @@ export default function EditFlight() {
         </div>
 
         <div>
-          <label><strong>Departure Time:</strong></label><br />
+          <label>
+            <strong>Departure Time:</strong>
+          </label>
+          <br />
           <input
             type="datetime-local"
             name="departureTime"
@@ -111,7 +127,10 @@ export default function EditFlight() {
         </div>
 
         <div>
-          <label><strong>Arrival Time:</strong></label><br />
+          <label>
+            <strong>Arrival Time:</strong>
+          </label>
+          <br />
           <input
             type="datetime-local"
             name="arrivalTime"
@@ -121,7 +140,10 @@ export default function EditFlight() {
         </div>
 
         <div>
-          <label><strong>Boarding Gate:</strong></label><br />
+          <label>
+            <strong>Boarding Gate:</strong>
+          </label>
+          <br />
           <input
             type="text"
             name="boardingGate"
@@ -131,7 +153,10 @@ export default function EditFlight() {
         </div>
 
         <div>
-          <label><strong>Total Seats:</strong></label><br />
+          <label>
+            <strong>Total Seats:</strong>
+          </label>
+          <br />
           <input
             type="number"
             name="totalSeats"
@@ -141,7 +166,10 @@ export default function EditFlight() {
         </div>
 
         <div>
-          <label><strong>Available Seats:</strong></label><br />
+          <label>
+            <strong>Available Seats:</strong>
+          </label>
+          <br />
           <input
             type="number"
             name="availableSeats"
@@ -151,7 +179,10 @@ export default function EditFlight() {
         </div>
 
         <div>
-          <label><strong>Price:</strong></label><br />
+          <label>
+            <strong>Price:</strong>
+          </label>
+          <br />
           <input
             type="number"
             name="price"
@@ -162,11 +193,14 @@ export default function EditFlight() {
         </div>
 
         <div>
-          <label><strong>Status:</strong></label><br />
+          <label>
+            <strong>Status:</strong>
+          </label>
+          <br />
           <select
             name="cancelled"
             defaultValue={flight.cancelled ? "true" : "false"}
-            required
+            disabled
           >
             <option value="false">Scheduled</option>
             <option value="true">Cancelled</option>
