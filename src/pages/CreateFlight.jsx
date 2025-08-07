@@ -4,6 +4,10 @@ import { useNavigate } from "react-router-dom";
 
 export default function CreateFlight() {
   const ctx = useContext(FlightsContext);
+  useEffect(() => {
+  console.log("Updated airplanes from context:", ctx.airplanes);
+}, [ctx.airplanes]);
+
   const navigate = useNavigate();
 
   const [departureTime, setDepartureTime] = useState("");
@@ -68,7 +72,7 @@ export default function CreateFlight() {
       cancelled: false,
     };
 
-    ctx.createFlight(newFlight);
+    ctx.createNewFlight(newFlight);
     navigate("/flights");
   };
 
@@ -91,75 +95,42 @@ export default function CreateFlight() {
       <h2>Create New Flight</h2>
       <form onSubmit={handleSubmit}>
         <div>
-          <label>
-            <strong>Flight Number:</strong>
-          </label>
-          <br />
-          <input
-            type="text"
-            name="flightNumber"
-            required
-            pattern="[A-Za-z0-9]{3,10}"
-            title="3 to 10 alphanumeric characters"
-          />
+          <label><strong>Flight Number:</strong></label><br />
+          <input type="text" name="flightNumber" required />
         </div>
 
         <div>
-          <label>
-            <strong>Departure Airport:</strong>
-          </label>
-          <br />
+          <label><strong>Departure Airport:</strong></label><br />
           <select name="departureAirportId" required>
-            <option value="" disabled>
-              -- Select Airport --
-            </option>
+            <option value="" disabled>-- Select Airport --</option>
             {ctx.airports.map((airport) => (
-              <option key={airport.id} value={airport.id}>
-                {airport.name}
-              </option>
+              <option key={airport.id} value={airport.id}>{airport.name}</option>
             ))}
           </select>
         </div>
 
         <div>
-          <label>
-            <strong>Arrival Airport:</strong>
-          </label>
-          <br />
+          <label><strong>Arrival Airport:</strong></label><br />
           <select name="arrivalAirportId" required>
-            <option value="" disabled>
-              -- Select Airport --
-            </option>
+            <option value="" disabled>-- Select Airport --</option>
             {ctx.airports.map((airport) => (
-              <option key={airport.id} value={airport.id}>
-                {airport.name}
-              </option>
+              <option key={airport.id} value={airport.id}>{airport.name}</option>
             ))}
           </select>
         </div>
 
         <div>
-          <label>
-            <strong>Airplane:</strong>
-          </label>
-          <br />
+          <label><strong>Airplane:</strong></label><br />
           <select name="airplaneId" required>
-            <option value="" disabled>
-              -- Select Airplane --
-            </option>
+            <option value="" disabled>-- Select Airplane --</option>
             {ctx.airplanes.map((airplane) => (
-              <option key={airplane.id} value={airplane.id}>
-                {airplane.modelNo}
-              </option>
+              <option key={airplane.id} value={airplane.id}>{airplane.modelNumber}</option>
             ))}
           </select>
         </div>
 
         <div>
-          <label>
-            <strong>Departure Time:</strong>
-          </label>
-          <br />
+          <label><strong>Departure Time:</strong></label><br />
           <input
             type="datetime-local"
             name="departureTime"
@@ -171,69 +142,35 @@ export default function CreateFlight() {
         </div>
 
         <div>
-          <label>
-            <strong>Arrival Time:</strong>
-          </label>
-          <br />
+          <label><strong>Arrival Time:</strong></label><br />
           <input
             type="datetime-local"
             name="arrivalTime"
             value={arrivalTime}
             onChange={(e) => setArrivalTime(e.target.value)}
-            min={departureTime || getMinDateTime()}
+            min={getMinDateTime()} // Still requires valid time, logic checked in submit
             required
           />
         </div>
 
         <div>
-          <label>
-            <strong>Boarding Gate:</strong>
-          </label>
-          <br />
-          <input
-            type="text"
-            name="boardingGate"
-            required
-            pattern="[A-Z][0-9]{1,2}"
-            title="e.g. A1, B12"
-          />
+          <label><strong>Boarding Gate:</strong></label><br />
+          <input type="text" name="boardingGate" required />
         </div>
 
         <div>
-          <label>
-            <strong>Total Seats:</strong>
-          </label>
-          <br />
-          <input type="number" name="totalSeats" required min={1} max={1000} />
+          <label><strong>Total Seats:</strong></label><br />
+          <input type="number" name="totalSeats" required min={1} />
         </div>
 
         <div>
-          <label>
-            <strong>Available Seats:</strong>
-          </label>
-          <br />
-          <input
-            type="number"
-            name="availableSeats"
-            required
-            min={0}
-            max={1000}
-          />
+          <label><strong>Available Seats:</strong></label><br />
+          <input type="number" name="availableSeats" required min={0} />
         </div>
 
         <div>
-          <label>
-            <strong>Price (₹):</strong>
-          </label>
-          <br />
-          <input
-            type="number"
-            name="price"
-            step="0.01"
-            required
-            min={1}
-            max={100000}
-          />
+          <label><strong>Price:</strong></label><br />
+          <input type="number" name="price" step="0.01" required min={1} />
         </div>
 
         <button type="submit" style={{ marginTop: "15px" }}>

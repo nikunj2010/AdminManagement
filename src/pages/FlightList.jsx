@@ -11,8 +11,8 @@ export default function FlightList() {
   const navigate = useNavigate();
 
   useEffect(() => {
-      ctx.getFlights();
-    }, [ctx.getFlights]);
+    ctx.getFlights();
+  }, [ctx.getFlights]);
 
   const headerStyle = {
     border: "1px solid black",
@@ -30,17 +30,18 @@ export default function FlightList() {
   const handleClick = () => {
     const flightNumber = searchTerm.trim();
     if (flightNumber === "") {
-      console.log("fetching all");
       ctx.getFlights();
     } else {
-      console.log("value = " + flightNumber);
-      console.log("searching...");
       ctx.searchFlights(flightNumber);
     }
   };
 
   const handleEdit = (id) => {
     navigate(`/flights/${id}`);
+  };
+
+  const handleCreate = () => {
+    navigate("/flights/new");
   };
 
   const handleCancel = async (flightId) => {
@@ -50,13 +51,13 @@ export default function FlightList() {
     if (!confirmed) return;
 
     const url = "http://localhost:8080/flights?flightId=" + flightId;
-    console.log(url);
     try {
       const response = await fetch(url, {
         method: "DELETE",
       });
       if (response.ok) {
         alert("Flight cancelled successfully");
+        ctx.getFlights(); // refresh list
       } else {
         alert("Failed to cancel the flight");
       }
@@ -70,15 +71,30 @@ export default function FlightList() {
 
   return (
     <>
-      <input
-        type="text"
-        placeholder="Search by Flight Number"
-        value={searchTerm}
-        onChange={(e) => setSearchTerm(e.target.value)}
-        style={{ margin: "10px 0", padding: "6px", width: "250px" }}
-        id="search-btn"
-      />
-      <button onClick={handleClick}>Search</button>
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+        <input
+          type="text"
+          placeholder="Search by Flight Number"
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          style={{ margin: "10px 0", padding: "6px", width: "250px" }}
+        />
+        <div>
+          <button onClick={handleClick} className="btn btn-secondary me-2">
+            Search
+          </button>
+          <button
+          onClick={() => navigate("/")}
+          style={{ marginLeft: "10px", padding: "5px" }}
+        >
+          Go to Home
+        </button>
+          <button onClick={handleCreate} className="btn btn-success">
+            Create Flight
+          </button>
+        </div>
+      </div>
+
       <table style={{ borderCollapse: "collapse", width: "100%" }}>
         <thead>
           <tr>
@@ -112,7 +128,6 @@ export default function FlightList() {
               <td style={cellStyle}>
                 {flight.cancelled ? "Cancelled" : "Scheduled"}
               </td>
-
               <td style={cellStyle}>
                 <button
                   className="btn btn-primary btn-sm me-2"
@@ -124,7 +139,7 @@ export default function FlightList() {
                   className="btn btn-danger btn-sm"
                   onClick={() => handleCancel(flight.id)}
                 >
-                  Delete
+                  Cancel
                 </button>
               </td>
             </tr>

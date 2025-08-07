@@ -1,26 +1,24 @@
-// App.jsx
 import axios from "axios";
 import EditFlight from "./pages/EditFlight";
 import FlightList from "./pages/FlightList";
 import Home from "./pages/Home";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-
 import { useCallback, useState } from "react";
 import FlightsContext from "./pages/FlightsContext";
 import BookingList from "./pages/BookingList";
+import CreateFlight from "./pages/CreateFlight";
 
 function App() {
   const [flights, setFlights] = useState([]);
-  const [error, setError] = useState(null);
   const [airports, setAirports] = useState([]);
   const [bookings, setBookings] = useState([]);
+  const [airplanes, setAirplanes] = useState([]); // ✅ NEW
+  const [error, setError] = useState(null);
 
   const getFlights = useCallback(() => {
     axios
       .get("http://localhost:8080/flights")
       .then((response) => {
-        const flightsResponse = response.data;
-        console.log("Response:", flightsResponse);
         setFlights(response.data.data);
       })
       .catch((err) => {
@@ -29,15 +27,11 @@ function App() {
       });
   }, []);
 
-  //Search flights using flight number
-  const searchFlights = function (flightNumber) {
+  const searchFlights = (flightNumber) => {
     const url = "http://localhost:8080/flights/" + flightNumber;
-    console.log(url);
     axios
       .get(url)
       .then((response) => {
-        const flightsResponse = response.data;
-        console.log("Response:", flightsResponse);
         setFlights(response.data.data);
       })
       .catch((err) => {
@@ -46,13 +40,25 @@ function App() {
       });
   };
 
-  //Get all airports
+const createNewFlight = (flight) => {
+  axios
+    .post("http://localhost:8080/flights", flight)
+    .then((response) => {
+      console.log("Flight created successfully:", response.data);
+      // Optionally refresh flight list
+      getFlights();
+    })
+    .catch((error) => {
+      console.error("Error creating flight:", error);
+      setError(error.message);
+    });
+};
+
+
   const getAllAirports = () => {
     axios
       .get("http://localhost:8080/flights/airports")
       .then((response) => {
-        console.log("airport data");
-        // console.log(response.data.data);
         setAirports(response.data.data);
       })
       .catch((err) => {
@@ -61,27 +67,36 @@ function App() {
       });
   };
 
-  //Update Flights
+  const getAirplanes = () => { // ✅ NEW FUNCTION
+    axios
+      .get("http://localhost:8080/flights/airplanes")
+      .then((response) => {
+        setAirplanes(response.data.data);
+        console.log(response.data.data);
+        console.log(airplanes)
+        console.log("get airplanes called")
+      })
+      .catch((err) => {
+        console.error("Fetch error:", err.message);
+        setError(err.message);
+      });
+  };
+
   const updateFlight = (flight) => {
     axios
       .put("http://localhost:8080/flights", flight)
       .then((response) => {
         console.log("Flight updated successfully:", response.data);
-        // You can add logic to refresh data or show success message
       })
       .catch((error) => {
         console.error("Error updating flight:", error);
-        // Handle error, show message, etc.
       });
   };
 
-  //Get all bookings
   const getBookings = useCallback(() => {
     axios
       .get("http://localhost:8081/bookings")
       .then((response) => {
-        const flightsResponse = response.data;
-        console.log("Response:", flightsResponse);
         setBookings(response.data.data);
       })
       .catch((err) => {
@@ -90,22 +105,19 @@ function App() {
       });
   }, []);
 
-  //Search bookings by user id
-  const searchBookings = function (userId) {
+  const searchBookings = (userId) => {
     const url = "http://localhost:8081/bookings/" + userId;
-    console.log(url);
     axios
       .get(url)
       .then((response) => {
-        const flightsResponse = response.data;
-        console.log("Response:", flightsResponse);
-        setFlights(response.data.data);
+        setBookings(response.data.data);
       })
       .catch((err) => {
         console.error("Fetch error:", err.message);
         setError(err.message);
       });
   };
+
   return (
     <FlightsContext.Provider
       value={{
@@ -114,11 +126,15 @@ function App() {
         getFlights,
         searchFlights,
         getAllAirports,
+        createNewFlight,
         airports,
         updateFlight,
         getBookings,
         searchBookings,
         bookings,
+        setBookings,
+        airplanes,        // ✅ NEW
+        getAirplanes,     // ✅ NEW
       }}
     >
       <BrowserRouter>
@@ -127,6 +143,7 @@ function App() {
           <Route path="/flights" element={<FlightList />} />
           <Route path="/flights/:id" element={<EditFlight />} />
           <Route path="/bookings" element={<BookingList />} />
+          <Route path="/flights/new" element={<CreateFlight />} />
         </Routes>
       </BrowserRouter>
     </FlightsContext.Provider>
